@@ -30,7 +30,7 @@ pipeline {
 
         stage('Build Application') {
             steps {
-                sh 'echo JAVA_HOME: $JAVA_HOME'
+                sh 'JAVA_HOME is ${JAVA_HOME}'
                 sh 'java -version'
                 sh './mvnw clean package -DskipTests'
             }
