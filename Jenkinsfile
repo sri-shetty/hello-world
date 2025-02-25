@@ -64,8 +64,10 @@ pipeline {
                 script {
                     try {
                         docker.withRegistry("https://${ACR_LOGIN_SERVER}", "${DOCKER_CREDENTIALS_ID}") {
-                            docker.image("${DOCKER_IMAGE}:${env.BUILD_NUMBER}").push()
-                            docker.image("${DOCKER_IMAGE}:${env.BUILD_NUMBER}").push('latest')
+                            // docker.image("${DOCKER_IMAGE}:${env.BUILD_NUMBER}").push()
+                            // docker.image("${DOCKER_IMAGE}:${env.BUILD_NUMBER}").push('latest')
+                            sh "/opt/homebrew/bin/docker push ${DOCKER_IMAGE}:${env.BUILD_NUMBER}"
+                            sh "/opt/homebrew/bin/docker push ${DOCKER_IMAGE}:${env.BUILD_NUMBER}:latest"
                         }
                         echo 'Docker image pushed successfully to ACR'
                     }
