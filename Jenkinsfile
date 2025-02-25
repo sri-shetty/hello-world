@@ -35,10 +35,18 @@ pipeline {
             }
         }
 
-        stage('Build Application') {
+        stage('Debug Environment') {
             steps {
                 sh 'echo "JAVA_HOME is set to: $JAVA_HOME"'
                 sh 'java -version'
+                sh 'echo "Current PATH: $PATH"'
+                sh 'which docker'
+                sh 'docker --version'
+            }
+        }
+        
+        stage('Build Application') {
+            steps {
                 sh './mvnw clean package -DskipTests'
             }
         }
