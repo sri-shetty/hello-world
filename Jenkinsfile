@@ -7,6 +7,8 @@ pipeline {
     }
 
     environment {
+        // Docker command
+        PATH = "/opt/homebrew/bin:${env.PATH}"
         // Azure Container Registry
         ACR_NAME = "sriacrregistry"
         ACR_LOGIN_SERVER = "${ACR_NAME}.azurecr.io"
@@ -37,6 +39,7 @@ pipeline {
             steps {
                 sh 'echo "JAVA_HOME is set to: $JAVA_HOME"'
                 sh 'java -version'
+                sh 'echo docker path ${env.PATH}'
                 sh './mvnw clean package -DskipTests'
             }
         }
