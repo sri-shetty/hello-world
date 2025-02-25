@@ -30,11 +30,8 @@ pipeline {
 
         stage('Build Application') {
             steps {
-                sh '''
-                    env | grep -e PATH -e JAVA_HOME
-                    which java
-                    java -version
-                '''
+                sh 'echo JAVA_HOME: $JAVA_HOME'
+                sh 'java -version'
                 sh './mvnw clean package -DskipTests'
             }
         }
