@@ -1,6 +1,11 @@
 pipeline {
     agent any
 
+    tools {
+        // Use the JDK configured in Global Tool Configuration
+        jdk 'jdk21'
+    }
+
     environment {
         // Azure Container Registry
         ACR_NAME = "sriacrregistry"
