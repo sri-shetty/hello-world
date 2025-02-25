@@ -44,7 +44,7 @@ pipeline {
                 sh 'docker --version'
             }
         }
-        
+
         stage('Build Application') {
             steps {
                 sh './mvnw clean package -DskipTests'
@@ -62,9 +62,17 @@ pipeline {
         stage('Push Docker Image to ACR') {
             steps {
                 script {
-                    docker.withRegistry("https://${ACR_LOGIN_SERVER}", "${DOCKER_CREDENTIALS_ID}") {
-                        docker.image("${DOCKER_IMAGE}:${env.BUILD_NUMBER}").push()
-                        docker.image("${DOCKER_IMAGE}:${env.BUILD_NUMBER}").push('latest')
+                    try {
+                        docker.withRegistry("https://${ACR_LOGIN_SERVER}", "${DOCKER_CREDENTIALS_ID}") {
+                            docker.image("${DOCKER_IMAGE}:${env.BUILD_NUMBER}").push()
+                            docker.image("${DOCKER_IMAGE}:${env.BUILD_NUMBER}").push('latest')
+                        }
+                        echo 'Docker image pushed successfully to ACR'
+                    }
+                    catch (Exception e) {
+                        echo "Failed to push Docker image to ACR: ${e}"
+                        currentBuild.result = 'FAILURE'
+                        error('Docker push failed.')
                     }
                 }
             }
