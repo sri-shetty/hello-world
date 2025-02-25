@@ -39,7 +39,6 @@ pipeline {
             steps {
                 sh 'echo "JAVA_HOME is set to: $JAVA_HOME"'
                 sh 'java -version'
-                sh 'echo docker path ${env.PATH}'
                 sh './mvnw clean package -DskipTests'
             }
         }
