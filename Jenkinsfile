@@ -65,10 +65,6 @@ pipeline {
                 script {
                     try {
                         docker.withRegistry("https://${ACR_LOGIN_SERVER}", "${DOCKER_CREDENTIALS_ID}") {
-                            //def customImage = docker.build("${DOCKER_IMAGE}:${env.BUILD_ID}")
-                            //customImage.push()
-                            //customImage.push('latest')
-                            sh 'az acr login --name sriacrregistry'
                             docker.image("${DOCKER_IMAGE}:${env.BUILD_ID}").push()
                             docker.image("${DOCKER_IMAGE}:${env.BUILD_ID}").push('latest')
                             // sh "/opt/homebrew/bin/docker push ${DOCKER_IMAGE}:${env.BUILD_ID}"
