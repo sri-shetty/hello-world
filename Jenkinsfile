@@ -1,5 +1,6 @@
 pipeline {
-    agent any
+    // agent any
+    agent { dockerfile true }
 
     tools {
         // Use the JDK configured in Global Tool Configuration
