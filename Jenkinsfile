@@ -54,7 +54,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    // docker.build("${DOCKER_IMAGE}:${env.BUILD_NUMBER}")
+                    // docker.build("${DOCKER_IMAGE}:${env.BUILD_ID}")
                     echo "Image build moved to next stage"
                 }
             }
@@ -65,13 +65,13 @@ pipeline {
                 script {
                     try {
                         docker.withRegistry("https://${ACR_LOGIN_SERVER}", "${DOCKER_CREDENTIALS_ID}") {
-                            def customImage = docker.build("${DOCKER_IMAGE}:${env.BUILD_NUMBER}")
+                            def customImage = docker.build("${DOCKER_IMAGE}:${env.BUILD_ID}")
                             customImage.push()
                             customImage.push('latest')
-                            // docker.image("${DOCKER_IMAGE}:${env.BUILD_NUMBER}").push()
-                            // docker.image("${DOCKER_IMAGE}:${env.BUILD_NUMBER}").push('latest')
-                            // sh "/opt/homebrew/bin/docker push ${DOCKER_IMAGE}:${env.BUILD_NUMBER}"
-                            // sh "/opt/homebrew/bin/docker push ${DOCKER_IMAGE}:${env.BUILD_NUMBER}:latest"
+                            // docker.image("${DOCKER_IMAGE}:${env.BUILD_ID}").push()
+                            // docker.image("${DOCKER_IMAGE}:${env.BUILD_ID}").push('latest')
+                            // sh "/opt/homebrew/bin/docker push ${DOCKER_IMAGE}:${env.BUILD_ID}"
+                            // sh "/opt/homebrew/bin/docker push ${DOCKER_IMAGE}:${env.BUILD_ID}:latest"
                         }
                         echo 'Docker image pushed successfully to ACR'
                     }
@@ -93,7 +93,7 @@ pipeline {
                 sh '''
                 az login --service-principal -u $(jq -r .clientId azure_credentials.json) -p $(jq -r .clientSecret azure_credentials.json) --tenant $(jq -r .tenantId azure_credentials.json)
                 az aks get-credentials --resource-group sriResourceGroup --name sriAKSCluster
-                kubectl set image deployment/hello-world-deployment hello-world=${DOCKER_IMAGE}:${BUILD_NUMBER}
+                kubectl set image deployment/hello-world-deployment hello-world=${DOCKER_IMAGE}:${BUILD_ID}
                 '''
 
                 sh 'rm azure_credentials.json'
@@ -102,7 +102,7 @@ pipeline {
 
         stage('Cleanup') {
             steps {
-                sh 'docker rmi ${DOCKER_IMAGE}:${BUILD_NUMBER}'
+                sh 'docker rmi ${DOCKER_IMAGE}:${BUILD_ID}'
                 sh 'docker rmi ${DOCKER_IMAGE}:latest'
             }
         }
