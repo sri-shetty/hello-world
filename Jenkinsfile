@@ -63,23 +63,31 @@ pipeline {
 
         stage('Push Docker Image to ACR') {
             steps {
-                script {
-                    try {
-                        docker.withRegistry("https://${ACR_LOGIN_SERVER}", "${DOCKER_CREDENTIALS_ID}") {
-                            customImage.push()
-                            customImage.push('latest')
+                //script {
+                //    try {
+                        // docker.withRegistry("https://${ACR_LOGIN_SERVER}", "${DOCKER_CREDENTIALS_ID}") {
+                            // customImage.push()
+                            // customImage.push('latest')
                             // docker.image("${DOCKER_IMAGE}:${env.BUILD_ID}").push()
                             // docker.image("${DOCKER_IMAGE}:${env.BUILD_ID}").push('latest')
                             // sh "/opt/homebrew/bin/docker push ${DOCKER_IMAGE}:${env.BUILD_ID}"
                             // sh "/opt/homebrew/bin/docker push ${DOCKER_IMAGE}:${env.BUILD_ID}:latest"
-                        }
-                        echo 'Docker image pushed successfully to ACR'
-                    }
-                    catch (Exception e) {
-                        echo "Failed to push Docker image to ACR: ${e}"
-                        currentBuild.result = 'FAILURE'
-                        error('Docker push failed.')
-                    }
+                        //}
+                //        echo 'Docker image pushed successfully to ACR'
+                //    }
+                //    catch (Exception e) {
+                //        echo "Failed to push Docker image to ACR: ${e}"
+                //        currentBuild.result = 'FAILURE'
+                //        error('Docker push failed.')
+                //    }
+
+                withCredentials([usernamePassword(credentialsId: "${DOCKER_CREDENTIALS_ID}", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
+                    sh """
+                        docker login ${ACR_LOGIN_SERVER} -u ${USERNAME} -p ${PASSWORD}
+                        docker push ${DOCKER_IMAGE}:${env.BUILD_NUMBER}
+                        docker push ${DOCKER_IMAGE}:latest
+                    """
+
                 }
             }
         }
