@@ -84,8 +84,7 @@ pipeline {
                 withCredentials([usernamePassword(credentialsId: "${DOCKER_CREDENTIALS_ID}", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                     sh """
                         docker login ${ACR_LOGIN_SERVER} -u ${USERNAME} -p ${PASSWORD}
-                        docker push ${DOCKER_IMAGE}:${env.BUILD_NUMBER}
-                        docker push "${DOCKER_IMAGE}:latest"
+                        docker push ${DOCKER_IMAGE}
                     """
 
                 }
@@ -101,7 +100,7 @@ pipeline {
                 sh '''
                 az login --service-principal -u $(jq -r .clientId azure_credentials.json) -p $(jq -r .clientSecret azure_credentials.json) --tenant $(jq -r .tenantId azure_credentials.json)
                 az aks get-credentials --resource-group sriResourceGroup --name sriAKSCluster
-                kubectl set image deployment/hello-world hello-world=${DOCKER_IMAGE}:${BUILD_NUMBER}
+                kubectl set image deployment/hello-world hello-world=${DOCKER_IMAGE}
                 '''
 
                 sh 'rm azure_credentials.json'
