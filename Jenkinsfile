@@ -84,7 +84,8 @@ pipeline {
                 withCredentials([usernamePassword(credentialsId: "${DOCKER_CREDENTIALS_ID}", usernameVariable: 'USERNAME', passwordVariable: 'PASSWORD')]) {
                     sh """
                         docker login ${ACR_LOGIN_SERVER} -u ${USERNAME} -p ${PASSWORD}
-                        docker push ${DOCKER_IMAGE}:${env.BUILD_NUMBER} "${DOCKER_IMAGE}:latest"
+                        docker push ${DOCKER_IMAGE}:${env.BUILD_NUMBER}
+                        docker push "${DOCKER_IMAGE}:latest"
                     """
 
                 }
