@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: hello-world
-        image: sriacrregistry.azurecr.io/hello-world:latest
+        image: sriacrregistry.azurecr.io/hello-world
         ports:
         - containerPort: 8080
         env:
