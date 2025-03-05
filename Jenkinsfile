@@ -91,7 +91,7 @@ pipeline {
             }
         }
 
-        stage('Ready to AKS') {
+        stage('Set to AKS') {
             steps {
                 withCredentials([string(credentialsId: "${AZURE_CREDENTIALS_ID}", variable: 'AZURE_CREDENTIALS_JSON')]) {
                     sh 'echo $AZURE_CREDENTIALS_JSON > azure_credentials.json'
@@ -116,9 +116,6 @@ pipeline {
                 }
             }
         }
-
-    }
-
 
         stage('Cleanup') {
             steps {
