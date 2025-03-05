@@ -108,12 +108,12 @@ pipeline {
 
         stage('Deploy Pod') {
             steps {
-                withCredentials([file(credentialsId: "${KUBECONFIG_CREDENTIAL_ID}", variable: 'KUBECONFIG')]) {
+                //withCredentials([file(credentialsId: "${KUBECONFIG_CREDENTIAL_ID}", variable: 'KUBECONFIG')]) {
                     sh """
                         kubectl apply -f k8s/deployment.yaml
                         kubectl apply -f k8s/service.yaml
                     """
-                }
+                //}
             }
         }
 
