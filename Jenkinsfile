@@ -91,7 +91,7 @@ pipeline {
             }
         }
 
-        stage('Deploy to AKS') {
+        stage('Ready to AKS') {
             steps {
                 withCredentials([string(credentialsId: "${AZURE_CREDENTIALS_ID}", variable: 'AZURE_CREDENTIALS_JSON')]) {
                     sh 'echo $AZURE_CREDENTIALS_JSON > azure_credentials.json'
@@ -100,12 +100,25 @@ pipeline {
                 sh '''
                 az login --service-principal -u $(jq -r .clientId azure_credentials.json) -p $(jq -r .clientSecret azure_credentials.json) --tenant $(jq -r .tenantId azure_credentials.json)
                 az aks get-credentials --resource-group sriResourceGroup --name sriAKSCluster
-                kubectl set image deployment/hello-world hello-world=${DOCKER_IMAGE}
                 '''
 
                 sh 'rm azure_credentials.json'
             }
         }
+
+        stage('Deploy Pod') {
+            steps {
+                withCredentials([file(credentialsId: "${KUBECONFIG_CREDENTIAL_ID}", variable: 'KUBECONFIG')]) {
+                    sh """
+                        kubectl apply -f k8s/deployment.yaml
+                        kubectl apply -f k8s/service.yaml
+                    """
+                }
+            }
+        }
+
+    }
+
 
         stage('Cleanup') {
             steps {
