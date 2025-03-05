@@ -120,7 +120,6 @@ pipeline {
         stage('Cleanup') {
             steps {
                 sh 'docker rmi ${DOCKER_IMAGE}'
-                sh 'docker rmi ${DOCKER_IMAGE}:latest'
             }
         }
     }
